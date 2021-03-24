@@ -107,7 +107,7 @@ export const exec = async (fn: Fn, self: any = null, ...args: any[]) => {
       column: topFrame.columnNumber!,
     });
     const tsSourceFile = path.normalize(`${path.dirname(topFrame.fileName!)}/${originalPosition.source!}`);
-    const { code, startLineNumber } = getFnCode(tsSourceFile, "_fileFnRange.json", originalPosition.line!, originalPosition.column!);
+    const { code, startLineNumber } = getFnCode(tsSourceFile, ".file-fn-range.json", originalPosition.line!, originalPosition.column!);
     const formattedCode = formatCode(code, startLineNumber, originalPosition.line!, originalPosition.column!);
     const maxLineLen = getMaxLineLen(formattedCode);
     const codeSnippetTitle = " code snippet ";
