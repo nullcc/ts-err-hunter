@@ -79,13 +79,18 @@ const getMaxLineLen = (content: string): number => {
     .length;
 };
 
-const formatCode = (code: string, startLineNumber: number): string => {
-  const lines = code.split("\n");
-  const maxLineNumberLen = (startLineNumber + lines.length).toString().length;
-  return lines
-    .map((line: string, idx: number) => {
+const formatCode = (code: string, startLineNumber: number, line: number, column: number): string => {
+  const rows = code.split("\n");
+  const maxLineNumberLen = (startLineNumber + rows.length).toString().length;
+  return rows
+    .map((row: string, idx: number) => {
       const lineNumberPrefix = (startLineNumber + idx).toString().padStart(maxLineNumberLen);
-      return `> ${lineNumberPrefix} ${line}`;
+      let content = `> ${lineNumberPrefix} ${row}`;
+      if (line === startLineNumber + idx) {
+        content += "\n";
+        content += _.repeat(" ", `> ${lineNumberPrefix} `.length + column) + "^";
+      }
+      return content;
     })
     .join("\n");
 };
@@ -103,7 +108,7 @@ export const exec = async (fn: Fn, self: any = null, ...args: any[]) => {
     });
     const tsSourceFile = path.normalize(`${path.dirname(topFrame.fileName!)}/${originalPosition.source!}`);
     const { code, startLineNumber } = getFnCode(tsSourceFile, "_fileFnRange.json", originalPosition.line!, originalPosition.column!);
-    const formattedCode = formatCode(code, startLineNumber);
+    const formattedCode = formatCode(code, startLineNumber, originalPosition.line!, originalPosition.column!);
     const maxLineLen = getMaxLineLen(formattedCode);
     const codeSnippetTitle = " code snippet ";
     const frameLength = (maxLineLen - codeSnippetTitle.length) / 2;
