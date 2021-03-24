@@ -1,0 +1,10 @@
+node_modules
+/lib
+.idea
+.DS_Store
+coverage
+package-lock.json
+.npmrc
+*.js
+*.js.map
+!jest.config.js
