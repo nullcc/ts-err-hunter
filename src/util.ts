@@ -17,7 +17,7 @@ interface Location {
   column: number;
 }
 
-const getFnCode = (sourceFile: string, fileFnMap: string, line: number, column: number): { code: string, startLineNumber: number } => {
+export const getFnCode = (sourceFile: string, fileFnRange: string, line: number, column: number): { code: string, startLineNumber: number } => {
   const content = fs.readFileSync(sourceFile).toString();
   const lines = content.split("\n");
   let pos = 0;
@@ -27,7 +27,7 @@ const getFnCode = (sourceFile: string, fileFnMap: string, line: number, column: 
     targetLine += 1;
   }
   pos += column;
-  const map = JSON.parse(fs.readFileSync(fileFnMap).toString());
+  const map = JSON.parse(fs.readFileSync(fileFnRange).toString());
   const positions = map[path.relative(process.cwd(), sourceFile)];
   const availablePositions = positions.filter((e: FnRange) => e.start <= pos && e.end >= pos);
   const targetPosition = _.maxBy(availablePositions, (pos: FnRange) => pos.end - pos.start);
@@ -120,3 +120,19 @@ export const exec = async (fn: Fn, self: any = null, ...args: any[]) => {
     throw err;
   }
 };
+
+export const scan = (dir: string): string[] => {
+  let files = fs.readdirSync(dir);
+  return _
+    .chain(files)
+    .map(file => path.join(dir, file))
+    .flatMap(filePath => {
+      const stats = fs.statSync(filePath);
+      if (stats.isDirectory()) return scan(filePath);
+      else if (stats.isFile() && [".ts", ".tsx"].includes(path.extname(filePath))) return filePath;
+      return "";
+    })
+    .flatMap()
+    .filter(e => e !== "")
+    .value();
+}

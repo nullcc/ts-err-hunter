@@ -1,5 +1,7 @@
+import compile from "./compile";
+import transformer from "./transformer";
 import { exec } from "./util";
 
 Error.stackTraceLimit = Infinity;
 
-export { exec };
+export { compile, transformer, exec };
