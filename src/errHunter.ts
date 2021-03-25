@@ -30,11 +30,14 @@ export class ErrHunter {
     this._err = err;
   }
 
-  async getFnSourceCode(depth: number = 1): Promise<Code> {
+  async getFnSourceCode(depth: number = 1): Promise<Code | null> {
     const userStackFrames = this._getUserStackFrames();
     const topFrame = userStackFrames[0];
     const errLocation = this._getLocation(topFrame);
     const originalPosition = await this._getOriginalPosition(errLocation);
+    if (originalPosition === null) {
+      return null;
+    }
     const sourceFile = path.normalize(`${path.dirname(errLocation.fileName)}/${originalPosition.source!}`);
     const code = this._getFnCode(sourceFile, originalPosition.line!, originalPosition.column!);
     code.content = this._prettifyCode(code, originalPosition.line!, originalPosition.column!);
@@ -55,11 +58,12 @@ export class ErrHunter {
     }
   }
 
-  private _getOriginalPosition(location: Location): Promise<NullableMappedPosition> {
+  private _getOriginalPosition(location: Location): Promise<NullableMappedPosition | null> {
     return new Promise((resolve, reject) => {
       const sourceMapPath = `${location.fileName}.map`;
       if (!fs.existsSync(sourceMapPath)) {
-        throw new Error(`Can't find source map in path: ${sourceMapPath}.`);
+        console.warn(`[ts-err-hunter] Can't find source map in path: ${sourceMapPath}!`);
+        return resolve(null);
       }
       const sourceMap = JSON.parse(fs.readFileSync(sourceMapPath).toString());
       SourceMapConsumer.with(sourceMap, null, consumer => {
@@ -108,7 +112,8 @@ export class ErrHunter {
       }
       return lineIdx + 1;
     }
-    throw new Error(`Can't find line number for position ${pos} in file ${fileName}.`);
+    console.warn(`[ts-err-hunter] Can't find line number for position ${pos} in file ${fileName}!`);
+    return -1;
   }
 
   private _prettifyCode(code: Code, errLine: number, errColumn: number): string {
