@@ -1,17 +1,18 @@
 import fs from "fs";
 import compile from "../src/compile";
 import { getFnCode } from "./util";
+import { OUTPUT_FILE_NAME } from "../src/constant";
 
 describe("Test transformer.", () => {
   let fileFnRange = {};
 
   beforeAll(async () => {
     compile("test/fixtures/src", "tsconfig.json");
-    fileFnRange = JSON.parse(fs.readFileSync("./.file-fn-range.json").toString());
+    fileFnRange = JSON.parse(fs.readFileSync(OUTPUT_FILE_NAME).toString());
   });
 
   test("Should output _fileFnRangeMap.json to root directory.", async () => {
-    expect(fs.existsSync("./.file-fn-range.json")).toBeTruthy();
+    expect(fs.existsSync(OUTPUT_FILE_NAME)).toBeTruthy();
   });
 
   test("Should record fn ranges in test/fixtures/src/fn/functionDeclaration.ts", async () => {

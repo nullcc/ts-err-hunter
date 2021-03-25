@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 
 export default (program: ts.Program, fileFnRangeMap: any): ts.TransformerFactory<ts.SourceFile> => {
   return (ctx: ts.TransformationContext) => {

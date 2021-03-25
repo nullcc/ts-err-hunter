@@ -1,15 +1,15 @@
-import fs from "fs";
-import * as ts from "typescript";
+import ts from "typescript";
 import transformer from "./transformer";
-import { scan } from "./util";
+import * as util from "./util";
+import { OUTPUT_FILE_NAME } from "./constant";
 
 export default function compile(dir: string, configFilePath: string, writeFileCallback?: ts.WriteFileCallback) {
-  const parsedCommandLine = ts.getParsedCommandLineOfConfigFile(configFilePath, undefined as any, (<any>ts.sys));
+  const parsedCommandLine = ts.getParsedCommandLineOfConfigFile(configFilePath, undefined as any, ts.sys as any);
   if (!parsedCommandLine) {
-    throw new Error("Parsing config file error!");
+    throw new Error("Parsing TS config file error!");
   }
+  const filePaths = util.scan(dir);
   const compilerOptions = parsedCommandLine.options;
-  const filePaths = scan(dir);
   const program = ts.createProgram(filePaths, compilerOptions);
   const fileFnRangeMap = {};
   const transformers: ts.CustomTransformers = {
@@ -20,9 +20,5 @@ export default function compile(dir: string, configFilePath: string, writeFileCa
   if (emitSkipped) {
     throw new Error(diagnostics.map(diagnostic => diagnostic.messageText).join('\n'));
   }
-  writeToFile(".file-fn-range.json", fileFnRangeMap);
+  util.writeToFile(OUTPUT_FILE_NAME, JSON.stringify(fileFnRangeMap));
 }
-
-const writeToFile = (fileName: string, map: any) => {
-  fs.writeFileSync(fileName, JSON.stringify(map));
-};

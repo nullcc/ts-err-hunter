@@ -1,7 +1,6 @@
 import compile from "./compile";
 import transformer from "./transformer";
-import { exec } from "./util";
+import { register } from "./register";
+import { ErrHunter } from "./errHunter";
 
-Error.stackTraceLimit = Infinity;
-
-export { compile, transformer, exec };
+export { compile, transformer, register, ErrHunter };
