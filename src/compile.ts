@@ -10,6 +10,7 @@ export default function compile(dir: string, configFilePath: string, writeFileCa
   }
   const filePaths = util.scan(dir);
   const compilerOptions = parsedCommandLine.options;
+  compilerOptions.sourceMap = true;
   const program = ts.createProgram(filePaths, compilerOptions);
   const fileFnRangeMap = {};
   const transformers: ts.CustomTransformers = {

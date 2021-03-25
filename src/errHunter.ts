@@ -90,7 +90,7 @@ export class ErrHunter {
     }
     pos += column;
     const fileFnRange = JSON.parse(fs.readFileSync(OUTPUT_FILE_NAME).toString());
-    const positions = fileFnRange[path.relative(process.cwd(), fileName)];
+    const positions = fileFnRange[fileName] || fileFnRange[path.relative(process.cwd(), fileName)];
     const fnCodeRange = _
       .chain(positions)
       .filter((e: FnRange) => e.start <= pos && e.end >= pos)
@@ -128,7 +128,8 @@ export class ErrHunter {
         let content = `> ${lineNumberPrefix} ${line}`;
         if (errLine === code.startLineNumber + idx) {
           content += "\n";
-          content += _.repeat(" ", `> ${lineNumberPrefix} `.length + errColumn) + `^ ------> ${this._err.message}`;
+          content += _.repeat(" ", `> ${lineNumberPrefix} `.length + errColumn) + `^ ------------> ${this._err.message}`;
+          content += "\n";
         }
         return content;
       })
