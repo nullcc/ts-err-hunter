@@ -99,13 +99,17 @@ try {
   return await fn();
 } catch (err) {
   const sourceCode = await err.getSourceCode();
-  // now you got TS source code of function in err point:
-  // {
-  //   fileName: '...',
-  //   content: '...'
-  //   startLineNumber: ...,
-  //   endLineNumber: ...
-  // }
+  if (sourceCode) {
+    // now you got TS source code of function in err point:
+    // {
+    //   fileName: '...',
+    //   content: '...'
+    //   startLineNumber: ...,
+    //   endLineNumber: ...
+    // }
+    console.log(`source file: ${sourceCode.fileName}`);
+    console.log(sourceCode.content);
+  }
   throw err;
 }
 ```
