@@ -46,8 +46,11 @@ export class ErrHunter {
 
   private _getUserStackFrames(): StackFrame[] {
     const errStackFrames = ErrorStackParser.parse(this._err);
-    // ignore all files in node_modules
-    return errStackFrames.filter(e => e.getFileName().indexOf("node_modules") === -1);
+    return _
+      .chain(errStackFrames)
+      .filter(e => e.getFileName().indexOf("node_modules") === -1) // ignore all files in node_modules
+      .filter(e => e.getFileName().startsWith("/")) // ignore non project file
+      .value();
   }
 
   private _getLocation(stackFrame: StackFrame): Location {
