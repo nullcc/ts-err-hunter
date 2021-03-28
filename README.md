@@ -119,10 +119,10 @@ const foo = () => {
 })();
 ```
 
-executes these code, and we will get error point in detail:
+Executes these code, and we will get error point in detail (with TS source code):
 
 ```
-source file: /Users/zhangjinyi/github/err-hunter-demo/src/c.ts
+source file: /absolute/path/to/TS/code.ts
 >  6 const foo = () => {
 >  7   // comments...
 >  8   fs.readFileSync("xxx.json");
