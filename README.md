@@ -95,21 +95,38 @@ $ ts-node compile.ts
 Now you can use it:
 
 ```typescript
-try {
-  return await fn();
-} catch (err) {
-  const sourceCode = await err.getSourceCode();
-  if (sourceCode) {
-    // now you got TS source code of function in err point:
-    // {
-    //   fileName: '...',
-    //   content: '...'
-    //   startLineNumber: ...,
-    //   endLineNumber: ...
-    // }
-    console.log(`source file: ${sourceCode.fileName}`);
-    console.log(sourceCode.content);
-  }
-  throw err;
+import fs from "fs";
+import { register } from "ts-err-hunter";
+
+register();
+
+const foo = () => {
+  // comments...
+  fs.readFileSync("xxx.json");
 }
+
+(async () => {
+  try {
+    foo();
+  } catch (err) {
+    const sourceCode = await err.getSourceCode();
+    if (sourceCode) {
+      console.log(`source file: ${sourceCode.fileName}`);
+      console.log(sourceCode.content);
+    }
+    throw err;
+  }
+})();
+```
+
+executes these code, and we will get error point in detail:
+
+```
+source file: /Users/zhangjinyi/github/err-hunter-demo/src/c.ts
+>  6 const foo = () => {
+>  7   // comments...
+>  8   fs.readFileSync("xxx.json");
+          ^ ------------> ENOENT: no such file or directory, open 'xxx.json'
+
+>  9 }
 ```
