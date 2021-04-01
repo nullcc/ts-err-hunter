@@ -34,7 +34,7 @@ export class Calc {
 }
 ```
 
-_fileFnRange.json:
+_.ts-err-hunter-file-fn-range.json:
 ```json
 {
   "src/a.ts": [
