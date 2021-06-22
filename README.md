@@ -78,7 +78,7 @@ register();
 
 And assumes that your source code directory is `src` and `tsconfig.json` is in the project root.
 
-Creates a new file named "compile.ts" in the project root with content:
+Creates a new file named `compile.ts` in the project root with content:
 
 ```typescript
 import { compile } from "ts-err-hunter";
@@ -90,6 +90,20 @@ Then run this to compile your code into JS.
 
 ```shell script
 $ ts-node compile.ts
+```
+
+You can also create `compile.js` with:
+
+```javascript
+const compile = require("ts-err-hunter").compile;
+
+compile("src", "tsconfig.json");
+```
+
+then run: 
+
+```shell script
+$ node compile.js
 ```
 
 Now you can use it:

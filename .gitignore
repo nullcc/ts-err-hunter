@@ -8,3 +8,4 @@ package-lock.json
 *.js
 *.js.map
 !jest.config.js
+.ts-err-hunter-file-fn-range.json
