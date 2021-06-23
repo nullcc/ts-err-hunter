@@ -100,7 +100,7 @@ export class ErrHunter {
     const end = fnCodeRange.end;
     const startLineNumber = this._getLineNumberByPos(fileName, start);
     const endLineNumber = this._getLineNumberByPos(fileName, end);
-    const codeContent = fileContent.substring(start, end).trim()
+    const codeContent = fileContent.substring(start, end).trim();
     return { fileName, content: codeContent, startLineNumber, endLineNumber };
   }
 
@@ -109,8 +109,8 @@ export class ErrHunter {
     const lines = content.split("\n");
     let posIdx = 0;
     for (let lineIdx = 0; lineIdx < lines.length; lineIdx += 1) {
-      if (posIdx + lines[lineIdx].length < pos + 1) {
-        posIdx += lines[lineIdx].length;
+      if (posIdx + lines[lineIdx].length < pos) {
+        posIdx += lines[lineIdx].length + 1;
         continue;
       }
       return lineIdx + 1;
